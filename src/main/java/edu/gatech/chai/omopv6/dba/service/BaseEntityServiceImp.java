@@ -17,7 +17,9 @@
 package edu.gatech.chai.omopv6.dba.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -30,6 +32,8 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +48,7 @@ import edu.gatech.chai.omopv6.model.entity.BaseEntity;
  * @param <V> the generic BaseEntityDao type
  */
 public abstract class BaseEntityServiceImp<T extends BaseEntity, V extends BaseEntityDao<T>>  implements IService<T> {
+	private static final Logger logger = LoggerFactory.getLogger(BaseEntityServiceImp.class);
 
 	/** The v dao. */
 	@Autowired
@@ -85,6 +90,92 @@ public abstract class BaseEntityServiceImp<T extends BaseEntity, V extends BaseE
 	@Transactional(readOnly = true)
 	public T findById(Long id) {
 		return vDao.findById(entityClass, id);
+	}
+
+	private void addParametersToQuery(TypedQuery<?> query, Map<String, String> parameters) {
+		for (Map.Entry<String, String> entry : parameters.entrySet()) {
+			String[] value = entry.getValue().split(",", 2);
+			String valueType = value[0];
+			String valueValue = value[1];
+
+			switch (valueType) {
+			case "Date":
+				Long dateInMili = Long.valueOf(valueValue);
+				Date valueDate = new Date(dateInMili);
+				query.setParameter(entry.getKey(), valueDate);	
+				break;
+			case "Short":
+				query.setParameter(entry.getKey(), Short.valueOf(valueValue));
+				break;
+			case "Long":
+				query.setParameter(entry.getKey(), Long.valueOf(valueValue));
+				break;
+			case "Double":
+				query.setParameter(entry.getKey(), Double.valueOf(valueValue));
+				break;
+			case "Integer":
+				query.setParameter(entry.getKey(), Integer.valueOf(valueValue));
+				break;
+			default: // assume it to be String
+				query.setParameter(entry.getKey(), valueValue);	
+			}				
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.gatech.chai.omopv5.dba.service.FPersonService#searchByNameAndLocation(
+	 * java.lang.String, java.lang.String, java.lang.String,
+	 * edu.gatech.chai.omopv5.model.entity.Location)
+	 */
+	@Transactional(readOnly = true)
+	public List<T> searchBySql(int fromIndex, int toIndex, String queryString, Map<String, String> parameters, String sort) {
+		EntityManager em = getEntityDao().getEntityManager();
+
+		TypedQuery<T> query = em.createQuery(queryString, entityClass);
+
+		addParametersToQuery(query, parameters);
+//		for (Map.Entry<String, String> entry : parameters.entrySet()) {
+//			String[] value = entry.getValue().split(",", 2);
+//			String valueType = value[0];
+//			String valueValue = value[1];
+//			
+//			logger.debug("SQL Requested: \n"
+//					+ " Request: " + queryString + "\n"
+//					+ " from: " + fromIndex + "\n"
+//					+ " to: " + toIndex + "\n"
+//					+ " paremeterKey: " + entry.getKey() + "\n"
+//					+ " parameterValue: " + entry.getValue());
+//			
+//			switch (valueType) {
+//			case "Date":
+//				Long dateInMili = Long.valueOf(valueValue);
+//				Date valueDate = new Date(dateInMili);
+//				query.setParameter(entry.getKey(), valueDate);	
+//				break;
+//			case "Short":
+//				query.setParameter(entry.getKey(), Short.valueOf(valueValue));
+//				break;
+//			case "Long":
+//				query.setParameter(entry.getKey(), Long.valueOf(valueValue));
+//				break;
+//			case "Double":
+//				query.setParameter(entry.getKey(), Double.valueOf(valueValue));
+//				break;
+//			case "Integer":
+//				query.setParameter(entry.getKey(), Integer.valueOf(valueValue));
+//				break;
+//			default: // assume it to be String
+//				query.setParameter(entry.getKey(), valueValue);	
+//			}				
+//		}
+
+		query.setFirstResult(fromIndex);
+		query.setMaxResults(toIndex - fromIndex);
+		List<T> retvals = query.getResultList();
+		return retvals;
 	}
 
 	/* (non-Javadoc)
@@ -212,6 +303,23 @@ public abstract class BaseEntityServiceImp<T extends BaseEntity, V extends BaseE
 		return em.createQuery(query).getSingleResult();
 	}
 	
+	@Transactional(readOnly = true)
+ 	public Long getSize(String queryString, Map<String, String> parameters) {
+ 		EntityManager em = getEntityDao().getEntityManager();
+
+ 		TypedQuery<Long> query = em.createQuery(queryString, Long.class);
+ 		if (parameters != null) {
+ 			addParametersToQuery(query, parameters);
+ 		}
+ //		if (parameters != null) {
+ //			for (Map.Entry<String, String> entry : parameters.entrySet()) {
+ //				query.setParameter(entry.getKey(), entry.getValue());
+ //			}
+ //		}
+ //		
+ 		return query.getSingleResult();
+	 }
+	 
 	/**
 	 * Adds the sort.
 	 *

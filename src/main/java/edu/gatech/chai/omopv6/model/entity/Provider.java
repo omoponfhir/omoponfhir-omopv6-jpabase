@@ -88,6 +88,10 @@ public class Provider extends BaseEntity {
 		super();
 	}
 	
+	public Provider(Long id) {
+		this.id = id;
+	}
+	
 	public Provider(Long id, String providerName, String npi, String dea, Concept specialtyConcept, 
 			CareSite careSite, Integer yearOfBirth, Concept genderConcept, String providerSourceValue, 
 			String specialtySourceValue, Concept specialtySourceConcept, String genderSourceValue,

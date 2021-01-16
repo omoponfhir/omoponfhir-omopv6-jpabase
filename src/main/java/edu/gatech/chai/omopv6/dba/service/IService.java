@@ -17,6 +17,7 @@
 package edu.gatech.chai.omopv6.dba.service;
 
 import java.util.List;
+import java.util.Map;
 
 import edu.gatech.chai.omopv6.model.entity.BaseEntity;
 
@@ -86,6 +87,16 @@ public interface IService<v extends BaseEntity> {
 	 */
 	public List<v> searchWithoutParams(int fromIndex, int toIndex, String sort);
 	
+	/**
+ 	 * Search with SQL command
+ 	 * @param queryString
+ 	 * @param parameters
+ 	 * @return the list
+ 	 */
+	public List<v> searchBySql(int fromIndex, int toIndex, String queryString, Map<String, String> parameters, String sort);
+
+	public Long getSize(String queryString, Map<String, String> parameters);
+
 	/**
 	 * Creates the.
 	 *

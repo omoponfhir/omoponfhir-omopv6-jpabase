@@ -16,7 +16,16 @@
  *******************************************************************************/
 package edu.gatech.chai.omopv6.dba.service;
 
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import edu.gatech.chai.omopv6.jpa.dao.DeviceExposureDao;
 import edu.gatech.chai.omopv6.model.entity.DeviceExposure;
@@ -27,7 +36,8 @@ import edu.gatech.chai.omopv6.model.entity.DeviceExposure;
  */
 @Service
 public class DeviceExposureServiceImp extends BaseEntityServiceImp<DeviceExposure, DeviceExposureDao>
-		implements DeviceExposureService {
+		implements DeviceExposureService {		
+	final static Logger logger = LoggerFactory.getLogger(DrugExposureServiceImp.class);
 
 	/**
 	 * Instantiates a new device exposure service imp.
@@ -36,4 +46,29 @@ public class DeviceExposureServiceImp extends BaseEntityServiceImp<DeviceExposur
 		super(DeviceExposure.class);
 	}
 
+	/*
+ 	 * (non-Javadoc)
+ 	 * 
+ 	 * @see
+ 	 * edu.gatech.chai.omopv5.dba.service.FPersonService#searchByNameAndLocation(
+ 	 * java.lang.String, java.lang.String, java.lang.String,
+ 	 * edu.gatech.chai.omopv5.model.entity.Location)
+ 	 */
+ //	@Transactional(readOnly = true)
+ //	public DrugExposure searchBySql(String queryString, Map<String, String> parameters) {
+ //		EntityManager em = getEntityDao().getEntityManager();
+ //
+ //		logger.debug("searchSql:" + queryString);
+ //		TypedQuery<? extends DrugExposure> query = em.createQuery(queryString, DrugExposure.class);
+ //		for (Map.Entry<String, String> entry : parameters.entrySet()) {
+ //			query.setParameter(entry.getKey(), entry.getValue());
+ //		}
+ //
+ //		List<? extends DrugExposure> results = query.getResultList();
+ //		if (results.size() > 0) {
+ //			return results.get(0);
+ //		} else {
+ //			return null;
+ //		}
+ //	}
 }
