@@ -50,7 +50,7 @@ public class LocationServiceImp extends BaseEntityServiceImp<Location, LocationD
 		List<Location> results;
 		
 		if (line2 != null) {
-			query = "SELECT t FROM Location t WHERE address1 LIKE :line1 AND address2 LIKE :line2 AND city LIKE :city AND state LIKE :state AND zipCode LIKE :zip";
+			query = "SELECT t FROM Location t WHERE address1 LIKE :line1 AND address2 LIKE :line2 AND city LIKE :city AND state LIKE :state AND zip LIKE :zip";
 			results = em.createQuery(query, Location.class)
 					.setParameter("line1", line1)
 					.setParameter("line2", line2)
@@ -59,7 +59,7 @@ public class LocationServiceImp extends BaseEntityServiceImp<Location, LocationD
 					.setParameter("zip", zipCode)
 					.getResultList();
 		} else { 
-			query = "SELECT t FROM Location t WHERE address1 LIKE :line1 AND city LIKE :city AND state LIKE :state AND zipCode LIKE :zip";
+			query = "SELECT t FROM Location t WHERE address1 LIKE :line1 AND city LIKE :city AND state LIKE :state AND zip LIKE :zip";
 			results = em.createQuery(query, Location.class)
 					.setParameter("line1", line1)
 					.setParameter("city", city)
