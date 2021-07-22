@@ -81,6 +81,10 @@ public class VisitOccurrence extends BaseEntity {
 	private Concept visitSourceConcept;
 
 	@ManyToOne
+	@JoinColumn(name="admitted_from_concept_id")
+	private Concept admittedFromConcept;
+
+	@ManyToOne
 	@JoinColumn(name="admitting_source_concept_id")
 	private Concept admittingSourceConcept;
 
@@ -202,6 +206,14 @@ public class VisitOccurrence extends BaseEntity {
 		this.visitSourceConcept = visitSourceConcept;
 	}
 	
+	public Concept getAdmittedFromConcept() {
+		return admittedFromConcept;
+	}
+	
+	public void setAdmittedFromConcept(Concept admittedFromConcept) {
+		this.admittedFromConcept = admittedFromConcept;
+	}
+
 	public Concept getAdmittingSourceConcept() {
 		return admittingSourceConcept;
 	}
