@@ -46,6 +46,10 @@ public class Note extends BaseEntity {
 	@JoinColumn(name="person_id", nullable=false)
 	private FPerson fPerson;
 
+	@ManyToOne
+	@JoinColumn(name = "note_event_field_concept_id", nullable = false)
+	private Concept noteEventFieldConcept;
+
 	@Column(name = "note_date", nullable=false)
 	@Temporal(TemporalType.DATE)
 	private Date noteDate;
@@ -116,6 +120,14 @@ public class Note extends BaseEntity {
 		this.fPerson = fPerson;
 	}
 	
+	public Concept getNoteEventFieldConcept() {
+		return noteEventFieldConcept;
+	}
+	
+	public void setNoteEventFieldConcept(Concept noteEventFieldConcept) {
+		this.noteEventFieldConcept = noteEventFieldConcept;
+	}
+
 	public Date getNoteDate() {
 		return noteDate;
 	}
